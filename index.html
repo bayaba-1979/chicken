@@ -1,15 +1,197 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🐔 Chicken</title>
-  <style>
-    body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #fff5f0; }
-    h1 { font-size: 4rem; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🐔 치킨 업무 수첩</title>
+<style>
+  :root {
+    --bg: #0f0f0f; --surface: #1a1a1a; --surface2: #242424; --border: #2a2a2a;
+    --text: #f0e6d3; --text2: #a09888; --accent: #f59e0b; --accent2: #f97316;
+    --danger: #ef4444; --success: #22c55e; --radius: 12px; --shadow: 0 0 0 1px rgba(255,255,255,0.04);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, 'Pretendard', 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.5; }
+  .app { max-width: 960px; margin: 0 auto; padding: 24px 20px; }
+  header { display: flex; align-items: center; gap: 16px; padding: 28px 0 32px; border-bottom: 1px solid var(--border); margin-bottom: 32px; }
+  .logo { font-size: 3rem; line-height: 1; }
+  header h1 { font-size: 1.75rem; font-weight: 800; letter-spacing: -0.02em; }
+  header .sub { color: var(--text2); font-size: 0.875rem; margin-top: 2px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+  .card { background: var(--surface); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .card h2 { font-size: 1.05rem; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; color: var(--accent); }
+  .input-row { display: flex; gap: 8px; margin-bottom: 16px; }
+  .input-row input { flex: 1; background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 10px 14px; border-radius: 8px; font-size: 0.875rem; outline: none; transition: border 0.2s; }
+  .input-row input:focus { border-color: var(--accent); }
+  .btn { background: var(--accent); color: #0f0f0f; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+  .btn:hover { background: var(--accent2); transform: translateY(-1px); }
+  .btn-sm { padding: 6px 12px; font-size: 0.75rem; border-radius: 6px; }
+  .btn-danger { background: transparent; border: 1px solid var(--danger); color: var(--danger); }
+  .btn-danger:hover { background: var(--danger); color: white; }
+  .task-list, .note-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .task-item, .note-item { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: var(--surface2); border-radius: 8px; font-size: 0.875rem; transition: all 0.2s; }
+  .task-item:hover, .note-item:hover { background: #2c2c2c; }
+  .task-item.done .task-text { text-decoration: line-through; color: var(--text2); }
+  .task-check { width: 20px; height: 20px; border: 2px solid var(--border); border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; }
+  .task-check:hover { border-color: var(--success); }
+  .task-item.done .task-check { background: var(--success); border-color: var(--success); }
+  .task-item.done .task-check::after { content: '✓'; font-size: 0.7rem; color: #0f0f0f; font-weight: 800; }
+  .task-text, .note-text { flex: 1; word-break: break-word; }
+  .task-del, .note-del { background: none; border: none; color: var(--text2); cursor: pointer; font-size: 0.75rem; padding: 4px 6px; border-radius: 4px; opacity: 0; transition: all 0.2s; flex-shrink: 0; }
+  .task-item:hover .task-del, .note-item:hover .note-del { opacity: 1; }
+  .task-del:hover, .note-del:hover { color: var(--danger); background: #2a1515; }
+  .empty { color: var(--text2); font-size: 0.8rem; text-align: center; padding: 20px 0; }
+  .counter { font-size: 0.75rem; color: var(--text2); margin-bottom: 12px; }
+  .counter span { color: var(--accent); font-weight: 700; }
+  .sticky-note { background: #2a2210; border-left: 3px solid var(--accent); padding: 14px 18px; border-radius: 0 8px 8px 0; font-size: 0.8rem; color: var(--text2); margin-top: 16px; }
+  .sticky-note strong { color: var(--accent); }
+  .full-width { grid-column: 1 / -1; }
+  @media (max-width: 640px) { .full-width { grid-column: 1; } }
+  .clock { font-size: 0.8rem; color: var(--text2); margin-left: auto; font-variant-numeric: tabular-nums; }
+  .tag { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; background: rgba(245,158,11,0.15); color: var(--accent); }
+  textarea { width: 100%; background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 12px 14px; border-radius: 8px; font-size: 0.875rem; resize: vertical; min-height: 80px; outline: none; font-family: inherit; }
+  textarea:focus { border-color: var(--accent); }
+  .note-meta { font-size: 0.7rem; color: var(--text2); }
+</style>
 </head>
 <body>
-  <h1>🐔 치킨</h1>
+<div class="app">
+  <header>
+    <div class="logo">🐔</div>
+    <div>
+      <h1>치킨 업무 수첩</h1>
+      <div class="sub">bayaba-1979/chicken · <span id="header-time"></span></div>
+    </div>
+  </header>
+
+  <div class="grid">
+    <!-- 할 일 -->
+    <div class="card">
+      <h2>📋 할 일 <span class="tag">TODO</span></h2>
+      <div class="counter">완료: <span id="done-count">0</span> / <span id="total-count">0</span></div>
+      <div class="input-row">
+        <input type="text" id="task-input" placeholder="새 할 일 입력..." maxlength="200">
+        <button class="btn" onclick="addTask()">추가</button>
+      </div>
+      <ul class="task-list" id="task-list"></ul>
+      <div class="empty" id="task-empty">할 일이 없습니다</div>
+    </div>
+
+    <!-- 메모 -->
+    <div class="card">
+      <h2>📝 빠른 메모</h2>
+      <div class="input-row" style="flex-direction:column;">
+        <input type="text" id="note-input" placeholder="메모 제목..." maxlength="100">
+        <textarea id="note-body" placeholder="내용..." rows="2"></textarea>
+        <button class="btn" onclick="addNote()" style="align-self:flex-end;">저장</button>
+      </div>
+      <ul class="note-list" id="note-list"></ul>
+      <div class="empty" id="note-empty">저장된 메모가 없습니다</div>
+    </div>
+
+    <!-- GitHub 정보 -->
+    <div class="card">
+      <h2>🔗 레포지토리</h2>
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:0.85rem;">
+        <div style="display:flex;justify-content:space-between;"><span>GitHub</span> <a href="https://github.com/bayaba-1979/chicken" target="_blank" style="color:var(--accent);">bayaba-1979/chicken 🐔</a></div>
+        <div style="display:flex;justify-content:space-between;"><span>Pages</span> <a href="https://bayaba-1979.github.io/chicken/" target="_blank" style="color:var(--accent);">bayaba-1979.github.io/chicken/</a></div>
+        <div style="display:flex;justify-content:space-between;"><span>Actions</span> <span style="color:var(--success);">✅ 활성화</span></div>
+        <div style="display:flex;justify-content:space-between;"><span>Branch</span> <span style="color:var(--text2);">main</span></div>
+      </div>
+    </div>
+
+    <!-- 상태 -->
+    <div class="card">
+      <h2>📊 대시보드</h2>
+      <div class="sticky-note">
+        <strong>🐔 Chicken 프로젝트</strong><br>
+        GitHub Pages + Actions 활성화 완료. 이 수첩에 저장된 모든 데이터는 브라우저 localStorage에 보관됩니다.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const TASKS_KEY = 'chicken-tasks';
+const NOTES_KEY = 'chicken-notes';
+
+function load(key) { try { return JSON.parse(localStorage.getItem(key)) || []; } catch(e) { return []; } }
+function save(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
+
+let tasks = load(TASKS_KEY);
+let notes = load(NOTES_KEY);
+
+function renderTasks() {
+  const list = document.getElementById('task-list');
+  const empty = document.getElementById('task-empty');
+  list.innerHTML = tasks.map((t, i) => `
+    <li class="task-item ${t.done ? 'done' : ''}">
+      <div class="task-check" onclick="toggleTask(${i})"></div>
+      <span class="task-text">${esc(t.text)}</span>
+      <button class="task-del" onclick="delTask(${i})">✕</button>
+    </li>`).join('');
+  empty.style.display = tasks.length ? 'none' : 'block';
+  document.getElementById('done-count').textContent = tasks.filter(t => t.done).length;
+  document.getElementById('total-count').textContent = tasks.length;
+}
+
+function renderNotes() {
+  const list = document.getElementById('note-list');
+  const empty = document.getElementById('note-empty');
+  list.innerHTML = notes.map((n, i) => `
+    <li class="note-item" style="flex-direction:column;align-items:flex-start;gap:4px;">
+      <div style="display:flex;width:100%;align-items:center;gap:8px;">
+        <strong style="flex:1;font-size:0.85rem;">${esc(n.title)}</strong>
+        <span class="note-meta">${n.date}</span>
+        <button class="note-del" onclick="delNote(${i})">✕</button>
+      </div>
+      <div style="font-size:0.8rem;color:var(--text2);">${esc(n.body || '')}</div>
+    </li>`).join('');
+  empty.style.display = notes.length ? 'none' : 'block';
+}
+
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+function addTask() {
+  const inp = document.getElementById('task-input');
+  const text = inp.value.trim();
+  if (!text) return;
+  tasks.unshift({ text, done: false, date: new Date().toLocaleDateString('ko-KR') });
+  save(TASKS_KEY, tasks);
+  inp.value = '';
+  renderTasks();
+}
+
+function toggleTask(i) { tasks[i].done = !tasks[i].done; save(TASKS_KEY, tasks); renderTasks(); }
+function delTask(i) { tasks.splice(i, 1); save(TASKS_KEY, tasks); renderTasks(); }
+
+function addNote() {
+  const titleInp = document.getElementById('note-input');
+  const bodyInp = document.getElementById('note-body');
+  const title = titleInp.value.trim();
+  if (!title) return;
+  notes.unshift({ title, body: bodyInp.value.trim(), date: new Date().toLocaleDateString('ko-KR') });
+  save(NOTES_KEY, notes);
+  titleInp.value = '';
+  bodyInp.value = '';
+  renderNotes();
+}
+
+function delNote(i) { notes.splice(i, 1); save(NOTES_KEY, notes); renderNotes(); }
+
+function tickClock() {
+  document.getElementById('header-time').textContent = new Date().toLocaleString('ko-KR', { hour:'2-digit', minute:'2-digit', second:'2-digit', year:'numeric', month:'long', day:'numeric', weekday:'short' });
+}
+
+document.getElementById('task-input').addEventListener('keydown', e => { if (e.key === 'Enter') addTask(); });
+document.getElementById('note-input').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('note-body').focus(); });
+document.getElementById('note-body').addEventListener('keydown', e => { if (e.key === 'Enter' && e.ctrlKey) addNote(); });
+
+renderTasks();
+renderNotes();
+tickClock();
+setInterval(tickClock, 1000);
+</script>
 </body>
 </html>
