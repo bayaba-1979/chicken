@@ -3,195 +3,584 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🐔 치킨 업무 수첩</title>
+<title>CHICKEN · 프리미엄 대시보드</title>
 <style>
-  :root {
-    --bg: #0f0f0f; --surface: #1a1a1a; --surface2: #242424; --border: #2a2a2a;
-    --text: #f0e6d3; --text2: #a09888; --accent: #f59e0b; --accent2: #f97316;
-    --danger: #ef4444; --success: #22c55e; --radius: 12px; --shadow: 0 0 0 1px rgba(255,255,255,0.04);
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, 'Pretendard', 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.5; }
-  .app { max-width: 960px; margin: 0 auto; padding: 24px 20px; }
-  header { display: flex; align-items: center; gap: 16px; padding: 28px 0 32px; border-bottom: 1px solid var(--border); margin-bottom: 32px; }
-  .logo { font-size: 3rem; line-height: 1; }
-  header h1 { font-size: 1.75rem; font-weight: 800; letter-spacing: -0.02em; }
-  header .sub { color: var(--text2); font-size: 0.875rem; margin-top: 2px; }
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-  @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
-  .card { background: var(--surface); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); border: 1px solid var(--border); }
-  .card h2 { font-size: 1.05rem; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; color: var(--accent); }
-  .input-row { display: flex; gap: 8px; margin-bottom: 16px; }
-  .input-row input { flex: 1; background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 10px 14px; border-radius: 8px; font-size: 0.875rem; outline: none; transition: border 0.2s; }
-  .input-row input:focus { border-color: var(--accent); }
-  .btn { background: var(--accent); color: #0f0f0f; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
-  .btn:hover { background: var(--accent2); transform: translateY(-1px); }
-  .btn-sm { padding: 6px 12px; font-size: 0.75rem; border-radius: 6px; }
-  .btn-danger { background: transparent; border: 1px solid var(--danger); color: var(--danger); }
-  .btn-danger:hover { background: var(--danger); color: white; }
-  .task-list, .note-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-  .task-item, .note-item { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: var(--surface2); border-radius: 8px; font-size: 0.875rem; transition: all 0.2s; }
-  .task-item:hover, .note-item:hover { background: #2c2c2c; }
-  .task-item.done .task-text { text-decoration: line-through; color: var(--text2); }
-  .task-check { width: 20px; height: 20px; border: 2px solid var(--border); border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; }
-  .task-check:hover { border-color: var(--success); }
-  .task-item.done .task-check { background: var(--success); border-color: var(--success); }
-  .task-item.done .task-check::after { content: '✓'; font-size: 0.7rem; color: #0f0f0f; font-weight: 800; }
-  .task-text, .note-text { flex: 1; word-break: break-word; }
-  .task-del, .note-del { background: none; border: none; color: var(--text2); cursor: pointer; font-size: 0.75rem; padding: 4px 6px; border-radius: 4px; opacity: 0; transition: all 0.2s; flex-shrink: 0; }
-  .task-item:hover .task-del, .note-item:hover .note-del { opacity: 1; }
-  .task-del:hover, .note-del:hover { color: var(--danger); background: #2a1515; }
-  .empty { color: var(--text2); font-size: 0.8rem; text-align: center; padding: 20px 0; }
-  .counter { font-size: 0.75rem; color: var(--text2); margin-bottom: 12px; }
-  .counter span { color: var(--accent); font-weight: 700; }
-  .sticky-note { background: #2a2210; border-left: 3px solid var(--accent); padding: 14px 18px; border-radius: 0 8px 8px 0; font-size: 0.8rem; color: var(--text2); margin-top: 16px; }
-  .sticky-note strong { color: var(--accent); }
-  .full-width { grid-column: 1 / -1; }
-  @media (max-width: 640px) { .full-width { grid-column: 1; } }
-  .clock { font-size: 0.8rem; color: var(--text2); margin-left: auto; font-variant-numeric: tabular-nums; }
-  .tag { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; background: rgba(245,158,11,0.15); color: var(--accent); }
-  textarea { width: 100%; background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 12px 14px; border-radius: 8px; font-size: 0.875rem; resize: vertical; min-height: 80px; outline: none; font-family: inherit; }
-  textarea:focus { border-color: var(--accent); }
-  .note-meta { font-size: 0.7rem; color: var(--text2); }
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;500;700;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+:root{
+  --bg:#090808; --s1:#120e0c; --s2:#1a1410; --s3:#241c16; --bdr:#2d1f18;
+  --g1:#e8a850; --g2:#d4893a; --g3:#f0c080; --g4:#c67e3c; --cp:#b87145;
+  --t1:#ede3d5; --t2:#9c8b78; --t3:#5e5145; --gr:#4a9c6c; --rd:#c44a4a;
+  --bl:#5b9bd5; --pr:#9b7ec4; --r:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Inter','Pretendard','Noto Sans KR',sans-serif;
+  background:var(--bg); color:var(--t1); min-height:100vh; line-height:1.5;
+  overflow-x:hidden;
+}
+
+/* 배경 이펙트 */
+body::before{
+  content:''; position:fixed; top:0;left:0;width:100%;height:100%;
+  background:
+    radial-gradient(ellipse at 12% 5%, rgba(232,168,80,0.07) 0%, transparent 55%),
+    radial-gradient(ellipse at 88% 92%, rgba(232,168,80,0.04) 0%, transparent 45%),
+    radial-gradient(ellipse at 55% 50%, rgba(198,126,60,0.03) 0%, transparent 65%);
+  pointer-events:none; z-index:0;
+}
+body::after{
+  content:''; position:fixed; top:0;left:0;width:100%;height:100%;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none; z-index:0; opacity:0.6;
+}
+
+/* 캔버스 파티클 */
+#particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.4}
+
+.app{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:28px 20px}
+
+/* ====== 글로벌 애니메이션 ====== */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes glow{0%,100%{box-shadow:0 0 20px rgba(232,168,80,0.1)}50%{box-shadow:0 0 40px rgba(232,168,80,0.2)}}
+@keyframes ringRotate{from{stroke-dashoffset:283}to{stroke-dashoffset:0}}
+
+/* ====== 히어로 ====== */
+.hero{
+  display:grid; grid-template-columns:1fr 1fr; min-height:300px;
+  background:linear-gradient(135deg, #120e0c 0%, #1c1510 30%, #241c16 60%, #120e0c 100%);
+  border:1px solid var(--bdr); border-radius:var(--r);
+  overflow:hidden; margin-bottom:28px; position:relative;
+}
+.hero::before{
+  content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%;
+  background:radial-gradient(circle at 30% 40%, rgba(232,168,80,0.06) 0%, transparent 50%);
+}
+.hero-img{
+  background:url('https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=800&q=80') center/cover;
+  position:relative; min-height:300px;
+}
+.hero-img::after{
+  content:''; position:absolute; top:0;left:0;width:100%;height:100%;
+  background:linear-gradient(135deg, rgba(18,14,12,0.7) 0%, rgba(18,14,12,0.2) 100%);
+}
+.hero-body{
+  padding:40px 36px; display:flex; flex-direction:column; justify-content:center;
+  gap:14px; position:relative; z-index:1;
+}
+.hero-badge{
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:0.62rem; letter-spacing:0.22em; color:var(--g1); font-weight:700;
+  text-transform:uppercase; border:1px solid rgba(232,168,80,0.25);
+  padding:6px 14px; border-radius:30px; width:fit-content;
+  background:rgba(232,168,80,0.05);
+}
+.hero-badge .dot{width:6px;height:6px;background:var(--g2);border-radius:50%;animation:pulse 2s infinite}
+.hero-body h2{
+  font-family:'Noto Serif KR',serif; font-size:2rem; font-weight:900;
+  color:var(--g2); letter-spacing:0.04em; line-height:1.2;
+  text-shadow:0 0 60px rgba(212,137,58,0.25);
+}
+.hero-body p{color:var(--t2); font-size:0.85rem; line-height:1.7; max-width:90%}
+@media(max-width:750px){.hero{grid-template-columns:1fr}.hero-img{min-height:180px}}
+
+/* ====== 헤더 ====== */
+header{
+  display:flex; align-items:center; gap:18px;
+  padding:28px 0 32px; margin-bottom:28px;
+  border-bottom:2px solid transparent;
+  border-image:linear-gradient(90deg, transparent 0%, var(--g1) 25%, var(--g2) 50%, var(--g1) 75%, transparent 100%) 1;
+}
+.logo{
+  width:58px;height:58px;flex-shrink:0;
+  background:linear-gradient(135deg, #1f1815 0%, #2d1f18 50%, #1f1815 100%);
+  border:1.5px solid var(--g1); border-radius:16px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Noto Serif KR',serif;font-size:1.4rem;font-weight:900;
+  color:var(--g2); animation:glow 3s infinite;
+}
+.header-info h1{
+  font-family:'Noto Serif KR',serif; font-size:1.6rem; font-weight:900;
+  color:var(--g2); letter-spacing:0.06em;
+}
+.header-info .sub{font-size:0.72rem;color:var(--t3);letter-spacing:0.1em;text-transform:uppercase}
+
+/* ====== 스탯 바 ====== */
+.stat-bar{
+  display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;
+}
+@media(max-width:750px){.stat-bar{grid-template-columns:repeat(2,1fr)}}
+.stat-card{
+  background:var(--s2); border:1px solid var(--bdr); border-radius:var(--r);
+  padding:20px; text-align:center; position:relative; overflow:hidden;
+  animation:fadeUp 0.6s ease-out both;
+}
+.stat-card:nth-child(1){animation-delay:0s}
+.stat-card:nth-child(2){animation-delay:0.1s}
+.stat-card:nth-child(3){animation-delay:0.2s}
+.stat-card:nth-child(4){animation-delay:0.3s}
+.stat-card::before{
+  content:''; position:absolute; top:0;left:0;width:100%;height:100%;
+  background:radial-gradient(ellipse at top, rgba(232,168,80,0.04) 0%, transparent 70%);
+}
+.stat-value{
+  font-family:'Inter',sans-serif; font-size:2.2rem; font-weight:900;
+  color:var(--g2); letter-spacing:-0.02em; position:relative;
+}
+.stat-label{font-size:0.68rem;color:var(--t3);letter-spacing:0.08em;text-transform:uppercase;margin-top:4px}
+.stat-icon{font-size:1.5rem;margin-bottom:4px;display:block}
+
+/* ====== 그리드 ====== */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:750px){.grid{grid-template-columns:1fr}}
+
+/* ====== 카드 ====== */
+.card{
+  background:var(--s2); border:1px solid var(--bdr); border-radius:var(--r);
+  padding:26px; position:relative; overflow:hidden; transition:all 0.35s;
+}
+.card:hover{border-color:#3d2a1a;box-shadow:0 12px 48px rgba(0,0,0,0.35)}
+.card::before{
+  content:''; position:absolute; top:0;left:0;width:100%;height:100%;
+  background:radial-gradient(ellipse at top left, rgba(232,168,80,0.03) 0%, transparent 70%);
+  pointer-events:none;
+}
+.card-hd{
+  display:flex;align-items:center;gap:10px;margin-bottom:20px;position:relative;
+}
+.card-hd .icon{font-size:1.1rem}
+.card-hd h3{
+  font-family:'Noto Serif KR',serif; font-size:0.95rem; font-weight:700;
+  color:var(--g1); letter-spacing:0.03em;
+}
+.card-hd::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--bdr),transparent)}
+.tag{
+  font-size:0.6rem;padding:3px 10px;border-radius:20px;letter-spacing:0.08em;text-transform:uppercase;
+  font-weight:700;border:1px solid rgba(232,168,80,0.18);
+  background:rgba(232,168,80,0.06);color:var(--g1);white-space:nowrap;
+}
+
+/* ====== 인포그래픽 - 도넛 차트 ====== */
+.chart-section{
+  display:flex;align-items:center;gap:24px;position:relative;
+}
+.donut-wrap{position:relative;width:120px;height:120px;flex-shrink:0}
+.donut-wrap svg{width:100%;height:100%;transform:rotate(-90deg)}
+.donut-bg{fill:none;stroke:var(--bdr);stroke-width:10}
+.donut-fg{fill:none;stroke:var(--g2);stroke-width:10;stroke-linecap:round;
+  transition:stroke-dashoffset 0.8s cubic-bezier(0.4,0,0.2,1)}
+.donut-center{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  text-align:center;
+}
+.donut-center .num{font-size:1.8rem;font-weight:900;color:var(--g2);font-family:'Inter',sans-serif}
+.donut-center .lbl{font-size:0.6rem;color:var(--t3);letter-spacing:0.06em;text-transform:uppercase}
+.donut-legend{display:flex;flex-direction:column;gap:8px;font-size:0.75rem}
+.donut-legend .leg{display:flex;align-items:center;gap:8px}
+.donut-legend .leg-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.donut-legend .leg-val{font-weight:700;color:var(--g1);margin-left:auto}
+
+/* ====== 바 차트 ====== */
+.bar-chart{display:flex;align-items:flex-end;gap:12px;height:120px;padding-top:8px;position:relative}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.bar-fill{
+  width:100%;max-width:40px;border-radius:6px 6px 0 0;
+  background:linear-gradient(180deg, var(--g2) 0%, var(--g1) 100%);
+  transition:height 0.6s cubic-bezier(0.4,0,0.2,1);
+  position:relative; min-height:4px;
+}
+.bar-fill:hover{filter:brightness(1.3)}
+.bar-lbl{font-size:0.6rem;color:var(--t3);text-align:center;letter-spacing:0.04em}
+
+/* ====== 입력 ====== */
+.inp-row{display:flex;gap:8px;margin-bottom:16px;position:relative}
+.inp-row input,textarea{
+  flex:1;background:var(--s3);border:1px solid var(--bdr);color:var(--t1);
+  padding:11px 15px;border-radius:10px;font-size:0.83rem;outline:none;
+  transition:all 0.25s;font-family:inherit;
+}
+.inp-row input:focus,textarea:focus{
+  border-color:var(--g1);box-shadow:0 0 0 3px rgba(232,168,80,0.08);
+}
+textarea{resize:vertical;min-height:68px;width:100%;margin-bottom:8px}
+
+.btn{
+  background:linear-gradient(135deg, #2d1f18 0%, #1f1815 100%);
+  border:1px solid var(--g1);color:var(--g2);padding:10px 18px;
+  border-radius:10px;font-weight:700;font-size:0.78rem;cursor:pointer;
+  letter-spacing:0.04em;white-space:nowrap;transition:all 0.3s;text-transform:uppercase;
+}
+.btn:hover{
+  background:linear-gradient(135deg, var(--g1) 0%, var(--g4) 100%);
+  color:#090808;border-color:transparent;box-shadow:0 6px 28px rgba(232,168,80,0.25);
+  transform:translateY(-1px);
+}
+.btn-sm{padding:5px 12px;font-size:0.68rem;border-radius:7px}
+
+/* ====== 리스트 ====== */
+.tlist,.nlist{list-style:none;display:flex;flex-direction:column;gap:6px;position:relative}
+.titem,.nitem{
+  display:flex;align-items:center;gap:10px;padding:12px 14px;
+  background:var(--s3);border-radius:10px;font-size:0.82rem;
+  transition:all 0.25s;border:1px solid transparent;
+  animation:fadeUp 0.3s ease-out both;
+}
+.titem:hover,.nitem:hover{background:#241d16;border-color:#2e2018}
+.titem.done .ttext{text-decoration:line-through;color:var(--t3)}
+.tcheck{
+  width:20px;height:20px;border:2px solid #3d2a1a;border-radius:6px;
+  cursor:pointer;flex-shrink:0;transition:all 0.3s;
+  display:flex;align-items:center;justify-content:center;
+}
+.tcheck:hover{border-color:var(--g1)}
+.titem.done .tcheck{background:var(--gr);border-color:var(--gr)}
+.titem.done .tcheck::after{content:'✓';color:#090808;font-weight:800;font-size:0.65rem}
+.ttext{flex:1;word-break:break-word}
+.delbtn{
+  background:none;border:none;color:var(--t3);cursor:pointer;font-size:0.7rem;
+  padding:5px 7px;border-radius:5px;opacity:0;transition:all 0.2s;flex-shrink:0;
+}
+.titem:hover .delbtn,.nitem:hover .delbtn{opacity:1}
+.delbtn:hover{color:var(--rd);background:#2a1515}
+
+.empty{color:var(--t3);font-size:0.76rem;text-align:center;padding:26px 0;font-style:italic}
+.counter{font-size:0.68rem;color:var(--t3);margin-bottom:14px;letter-spacing:0.06em;text-transform:uppercase}
+.counter b{color:var(--g1)}
+
+/* ====== 인포 카드 ====== */
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.025);font-size:0.8rem}
+.info-row a{color:var(--g1);text-decoration:none;transition:color 0.2s}
+.info-row a:hover{color:var(--g2)}
+.badge{font-size:0.65rem;padding:3px 10px;border-radius:20px;font-weight:600;letter-spacing:0.04em}
+.badge-on{background:rgba(74,156,108,0.1);color:var(--gr);border:1px solid rgba(74,156,108,0.2)}
+
+.quote{
+  background:linear-gradient(135deg, #1f1815 0%, #1a1210 100%);
+  border-left:3px solid var(--g1);padding:18px 22px;border-radius:0 10px 10px 0;
+  position:relative;
+}
+.quote .qm{
+  font-family:'Noto Serif KR',serif;font-size:2.6rem;color:var(--g1);opacity:0.18;
+  position:absolute;top:-12px;left:10px;line-height:1;
+}
+.quote .qt{font-family:'Noto Serif KR',serif;color:var(--g3);font-size:0.85rem;font-weight:500}
+.quote .qs{color:var(--t3);font-size:0.68rem;margin-top:6px;letter-spacing:0.06em}
+
+/* ====== 시계 ====== */
+.clock-display{
+  text-align:center;padding:12px 0;position:relative;
+}
+.clock-time{
+  font-family:'Inter',sans-serif;font-size:2.4rem;font-weight:900;
+  color:var(--g2);letter-spacing:-0.03em;font-variant-numeric:tabular-nums;
+}
+.clock-date{font-size:0.75rem;color:var(--t2);margin-top:2px}
+
+/* ====== 풀와이드 ====== */
+.fw{grid-column:1/-1}
+@media(max-width:750px){.fw{grid-column:1}}
+
+/* 링크 카드 */
+.link-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;position:relative}
+@media(max-width:500px){.link-grid{grid-template-columns:1fr}}
+.link-card{
+  background:var(--s3);border:1px solid var(--bdr);border-radius:10px;
+  padding:18px;text-align:center;transition:all 0.3s;cursor:pointer;text-decoration:none;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+}
+.link-card:hover{background:#241d16;border-color:var(--g1);transform:translateY(-3px)}
+.link-card .lk-icon{font-size:1.8rem}
+.link-card .lk-title{font-size:0.8rem;font-weight:700;color:var(--g1)}
+.link-card .lk-sub{font-size:0.65rem;color:var(--t3)}
 </style>
 </head>
 <body>
+<canvas id="particles"></canvas>
+
 <div class="app">
+  <!-- 히어로 -->
+  <div class="hero">
+    <div class="hero-img"></div>
+    <div class="hero-body">
+      <div class="hero-badge"><span class="dot"></span> PREMIUM DASHBOARD v3.0</div>
+      <h2>CHICKEN<br>인포그래픽 수첩</h2>
+      <p>데이터 시각화와 스마트 워크플로우를 결합한<br>최고급 프리미엄 업무 공간.</p>
+    </div>
+  </div>
+
+  <!-- 헤더 -->
   <header>
-    <div class="logo">🐔</div>
-    <div>
-      <h1>치킨 업무 수첩</h1>
-      <div class="sub">bayaba-1979/chicken · <span id="header-time"></span></div>
+    <div class="logo">치</div>
+    <div class="header-info">
+      <h1>CHICKEN</h1>
+      <div class="sub">Infographic Dashboard · bayaba-1979</div>
+    </div>
+    <div style="margin-left:auto;text-align:right;">
+      <div class="clock-time" id="live-clock" style="font-size:1.3rem;">00:00:00</div>
+      <div style="font-size:0.65rem;color:var(--t3);" id="live-date"></div>
     </div>
   </header>
 
+  <!-- 스탯 바 -->
+  <div class="stat-bar">
+    <div class="stat-card">
+      <span class="stat-icon">📋</span>
+      <div class="stat-value" id="stat-total">0</div>
+      <div class="stat-label">전체 할 일</div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon">✅</span>
+      <div class="stat-value" id="stat-done">0</div>
+      <div class="stat-label">완료</div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon">📝</span>
+      <div class="stat-value" id="stat-notes">0</div>
+      <div class="stat-label">메모</div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon">📊</span>
+      <div class="stat-value" id="stat-rate">0%</div>
+      <div class="stat-label">달성률</div>
+    </div>
+  </div>
+
+  <!-- 메인 그리드 -->
   <div class="grid">
-    <!-- 할 일 -->
+    <!-- TODO 리스트 -->
     <div class="card">
-      <h2>📋 할 일 <span class="tag">TODO</span></h2>
-      <div class="counter">완료: <span id="done-count">0</span> / <span id="total-count">0</span></div>
-      <div class="input-row">
-        <input type="text" id="task-input" placeholder="새 할 일 입력..." maxlength="200">
-        <button class="btn" onclick="addTask()">추가</button>
+      <div class="card-hd"><span class="icon">✦</span><h3>할 일</h3><span class="tag">Tasks</span></div>
+      <div class="counter">완료 <b id="done-cnt">0</b> / <b id="total-cnt">0</b></div>
+      <div class="inp-row">
+        <input type="text" id="task-inp" placeholder="새 할 일을 입력하세요…" maxlength="200">
+        <button class="btn" onclick="addTask()">+ 추가</button>
       </div>
-      <ul class="task-list" id="task-list"></ul>
-      <div class="empty" id="task-empty">할 일이 없습니다</div>
+      <ul class="tlist" id="tlist"></ul>
+      <div class="empty" id="tempty">— 등록된 할 일이 없습니다 —</div>
     </div>
 
     <!-- 메모 -->
     <div class="card">
-      <h2>📝 빠른 메모</h2>
-      <div class="input-row" style="flex-direction:column;">
-        <input type="text" id="note-input" placeholder="메모 제목..." maxlength="100">
-        <textarea id="note-body" placeholder="내용..." rows="2"></textarea>
-        <button class="btn" onclick="addNote()" style="align-self:flex-end;">저장</button>
+      <div class="card-hd"><span class="icon">❦</span><h3>메모</h3><span class="tag">Notes</span></div>
+      <div style="display:flex;flex-direction:column;gap:8px;position:relative">
+        <input type="text" id="note-inp" placeholder="제목…" maxlength="100" style="width:100%">
+        <textarea id="note-body" placeholder="내용…" rows="2"></textarea>
+        <button class="btn" onclick="addNote()" style="align-self:flex-end">기록</button>
       </div>
-      <ul class="note-list" id="note-list"></ul>
-      <div class="empty" id="note-empty">저장된 메모가 없습니다</div>
+      <ul class="nlist" id="nlist" style="margin-top:16px"></ul>
+      <div class="empty" id="nempty">— 기록된 메모가 없습니다 —</div>
     </div>
 
-    <!-- GitHub 정보 -->
+    <!-- 인포그래픽: 도넛 차트 -->
     <div class="card">
-      <h2>🔗 레포지토리</h2>
-      <div style="display:flex;flex-direction:column;gap:8px;font-size:0.85rem;">
-        <div style="display:flex;justify-content:space-between;"><span>GitHub</span> <a href="https://github.com/bayaba-1979/chicken" target="_blank" style="color:var(--accent);">bayaba-1979/chicken 🐔</a></div>
-        <div style="display:flex;justify-content:space-between;"><span>Pages</span> <a href="https://bayaba-1979.github.io/chicken/" target="_blank" style="color:var(--accent);">bayaba-1979.github.io/chicken/</a></div>
-        <div style="display:flex;justify-content:space-between;"><span>Actions</span> <span style="color:var(--success);">✅ 활성화</span></div>
-        <div style="display:flex;justify-content:space-between;"><span>Branch</span> <span style="color:var(--text2);">main</span></div>
+      <div class="card-hd"><span class="icon">◆</span><h3>생산성 인포그래픽</h3><span class="tag">Chart</span></div>
+      <div class="chart-section">
+        <div class="donut-wrap">
+          <svg viewBox="0 0 100 100">
+            <circle class="donut-bg" cx="50" cy="50" r="45"/>
+            <circle class="donut-fg" id="donut" cx="50" cy="50" r="45"
+              stroke-dasharray="283" stroke-dashoffset="283"/>
+          </svg>
+          <div class="donut-center">
+            <div class="num" id="donut-pct">0%</div>
+            <div class="lbl">달성률</div>
+          </div>
+        </div>
+        <div class="donut-legend">
+          <div class="leg"><span class="leg-dot" style="background:var(--g2)"></span> 완료<span class="leg-val" id="leg-done">0</span></div>
+          <div class="leg"><span class="leg-dot" style="background:var(--bdr)"></span> 진행중<span class="leg-val" id="leg-pend">0</span></div>
+          <div class="leg"><span class="leg-dot" style="background:var(--t3)"></span> 전체<span class="leg-val" id="leg-total">0</span></div>
+        </div>
       </div>
     </div>
 
-    <!-- 상태 -->
+    <!-- 인포그래픽: 주간 생산성 바 -->
     <div class="card">
-      <h2>📊 대시보드</h2>
-      <div class="sticky-note">
-        <strong>🐔 Chicken 프로젝트</strong><br>
-        GitHub Pages + Actions 활성화 완료. 이 수첩에 저장된 모든 데이터는 브라우저 localStorage에 보관됩니다.
+      <div class="card-hd"><span class="icon">▤</span><h3>주간 생산성</h3><span class="tag">Bar</span></div>
+      <div class="bar-chart" id="bar-chart">
+        <!-- JS로 채움 -->
+      </div>
+      <div style="text-align:center;font-size:0.65rem;color:var(--t3);margin-top:8px;letter-spacing:0.06em">
+        요일별 완료한 할 일
+      </div>
+    </div>
+
+    <!-- 레포 정보 + 링크 -->
+    <div class="card">
+      <div class="card-hd"><span class="icon">◇</span><h3>레포지토리</h3><span class="tag">Links</span></div>
+      <div class="link-grid">
+        <a class="link-card" href="https://github.com/bayaba-1979/chicken" target="_blank">
+          <span class="lk-icon">🐔</span><span class="lk-title">GitHub</span><span class="lk-sub">bayaba-1979/chicken</span>
+        </a>
+        <a class="link-card" href="https://bayaba-1979.github.io/chicken/" target="_blank">
+          <span class="lk-icon">🌐</span><span class="lk-title">Pages</span><span class="lk-sub">Live Site</span>
+        </a>
+        <a class="link-card" href="https://github.com/bayaba-1979/chicken/actions" target="_blank">
+          <span class="lk-icon">⚡</span><span class="lk-title">Actions</span><span class="lk-sub">CI/CD Active</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 프리미엄 -->
+    <div class="card">
+      <div class="card-hd"><span class="icon">◆</span><h3>프리미엄</h3><span class="tag">Info</span></div>
+      <div class="quote">
+        <div class="qm">"</div>
+        <div class="qt">측정할 수 없다면 관리할 수 없고, 관리할 수 없다면 개선할 수 없다.</div>
+        <div class="qs">— CHICKEN Infographic Dashboard —</div>
+      </div>
+      <div style="margin-top:18px;display:flex;flex-direction:column;gap:5px;font-size:0.7rem;color:var(--t3)">
+        <div class="info-row"><span>저장소</span><span style="color:var(--t2)">LocalStorage (비공개)</span></div>
+        <div class="info-row"><span>에디션</span><span style="color:var(--g1)">Premium Amber Infographic</span></div>
+        <div class="info-row"><span>버전</span><span style="color:var(--t2)">v3.0</span></div>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-const TASKS_KEY = 'chicken-tasks';
-const NOTES_KEY = 'chicken-notes';
+// ==================== 파티클 ====================
+const canvas=document.getElementById('particles'),ctx=canvas.getContext('2d');
+let particles=[];
+function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight}
+resize();window.addEventListener('resize',resize);
+for(let i=0;i<35;i++){
+  particles.push({
+    x:Math.random()*canvas.width,y:Math.random()*canvas.height,
+    r:Math.random()*1.2+0.3,vx:(Math.random()-0.5)*0.2,vy:(Math.random()-0.5)*0.2,
+    a:Math.random()*0.4+0.1
+  });
+}
+function animParticles(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  particles.forEach(p=>{
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0)p.x=canvas.width;if(p.x>canvas.width)p.x=0;
+    if(p.y<0)p.y=canvas.height;if(p.y>canvas.height)p.y=0;
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(232,168,80,${p.a})`;ctx.fill();
+  });
+  requestAnimationFrame(animParticles);
+}
+animParticles();
 
-function load(key) { try { return JSON.parse(localStorage.getItem(key)) || []; } catch(e) { return []; } }
-function save(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
+// ==================== 데이터 ====================
+const TK='chicken-tasks-v3',NK='chicken-notes-v3',WK='chicken-weekly';
+function ld(k){try{return JSON.parse(localStorage.getItem(k))||[]}catch(e){return[]}}
+function sv(k,d){localStorage.setItem(k,JSON.stringify(d))}
 
-let tasks = load(TASKS_KEY);
-let notes = load(NOTES_KEY);
+let tasks=ld(TK),notes=ld(NK);
+let weekly=ld(WK);
+// 주간 데이터 초기화
+const days=['월','화','수','목','금','토','일'];
+const today=new Date().getDay(); // 0=일
+const mondayIdx=today===0?6:today-1; // 이번주 월요일부터 몇일 지났나
+if(!weekly.length||weekly.length!==7){weekly=[0,0,0,0,0,0,0];sv(WK,weekly)}
 
-function renderTasks() {
-  const list = document.getElementById('task-list');
-  const empty = document.getElementById('task-empty');
-  list.innerHTML = tasks.map((t, i) => `
-    <li class="task-item ${t.done ? 'done' : ''}">
-      <div class="task-check" onclick="toggleTask(${i})"></div>
-      <span class="task-text">${esc(t.text)}</span>
-      <button class="task-del" onclick="delTask(${i})">✕</button>
+// ==================== 렌더 ====================
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+
+function renderTasks(){
+  const el=document.getElementById('tlist');
+  el.innerHTML=tasks.map((t,i)=>`
+    <li class="titem${t.done?' done':''}">
+      <div class="tcheck" onclick="toggle(${i})"></div>
+      <span class="ttext">${esc(t.text)}</span>
+      <button class="delbtn" onclick="delT(${i})">✕</button>
     </li>`).join('');
-  empty.style.display = tasks.length ? 'none' : 'block';
-  document.getElementById('done-count').textContent = tasks.filter(t => t.done).length;
-  document.getElementById('total-count').textContent = tasks.length;
+  document.getElementById('tempty').style.display=tasks.length?'none':'block';
+  document.getElementById('done-cnt').textContent=tasks.filter(t=>t.done).length;
+  document.getElementById('total-cnt').textContent=tasks.length;
+  updateStats();
 }
 
-function renderNotes() {
-  const list = document.getElementById('note-list');
-  const empty = document.getElementById('note-empty');
-  list.innerHTML = notes.map((n, i) => `
-    <li class="note-item" style="flex-direction:column;align-items:flex-start;gap:4px;">
-      <div style="display:flex;width:100%;align-items:center;gap:8px;">
-        <strong style="flex:1;font-size:0.85rem;">${esc(n.title)}</strong>
-        <span class="note-meta">${n.date}</span>
-        <button class="note-del" onclick="delNote(${i})">✕</button>
+function renderNotes(){
+  document.getElementById('nlist').innerHTML=notes.map((n,i)=>`
+    <li class="nitem" style="flex-direction:column;align-items:flex-start;gap:4px">
+      <div style="display:flex;width:100%;align-items:center;gap:8px">
+        <strong style="flex:1;font-size:0.82rem;color:var(--g3)">${esc(n.title)}</strong>
+        <span style="font-size:0.62rem;color:var(--t3)">${n.date}</span>
+        <button class="delbtn" onclick="delN(${i})">✕</button>
       </div>
-      <div style="font-size:0.8rem;color:var(--text2);">${esc(n.body || '')}</div>
+      <div style="font-size:0.76rem;color:var(--t2);line-height:1.5">${esc(n.body||'')}</div>
     </li>`).join('');
-  empty.style.display = notes.length ? 'none' : 'block';
+  document.getElementById('nempty').style.display=notes.length?'none':'block';
+  updateStats();
 }
 
-function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
-
-function addTask() {
-  const inp = document.getElementById('task-input');
-  const text = inp.value.trim();
-  if (!text) return;
-  tasks.unshift({ text, done: false, date: new Date().toLocaleDateString('ko-KR') });
-  save(TASKS_KEY, tasks);
-  inp.value = '';
-  renderTasks();
+function updateStats(){
+  const total=tasks.length,done=tasks.filter(t=>t.done).length;
+  const rate=total===0?0:Math.round((done/total)*100);
+  document.getElementById('stat-total').textContent=total;
+  document.getElementById('stat-done').textContent=done;
+  document.getElementById('stat-notes').textContent=notes.length;
+  document.getElementById('stat-rate').textContent=rate+'%';
+  // 도넛
+  const circ=283,offset=circ-(circ*(rate/100));
+  document.getElementById('donut').style.strokeDashoffset=offset;
+  document.getElementById('donut-pct').textContent=rate+'%';
+  document.getElementById('leg-done').textContent=done;
+  document.getElementById('leg-pend').textContent=total-done;
+  document.getElementById('leg-total').textContent=total;
+  // 바 차트
+  renderBars();
 }
 
-function toggleTask(i) { tasks[i].done = !tasks[i].done; save(TASKS_KEY, tasks); renderTasks(); }
-function delTask(i) { tasks.splice(i, 1); save(TASKS_KEY, tasks); renderTasks(); }
-
-function addNote() {
-  const titleInp = document.getElementById('note-input');
-  const bodyInp = document.getElementById('note-body');
-  const title = titleInp.value.trim();
-  if (!title) return;
-  notes.unshift({ title, body: bodyInp.value.trim(), date: new Date().toLocaleDateString('ko-KR') });
-  save(NOTES_KEY, notes);
-  titleInp.value = '';
-  bodyInp.value = '';
-  renderNotes();
+function renderBars(){
+  const max=Math.max(...weekly,1);
+  document.getElementById('bar-chart').innerHTML=weekly.map((v,i)=>{
+    const h=Math.max((v/max)*100,4);
+    return `<div class="bar-col">
+      <div class="bar-fill" style="height:${h}%" title="${v}개"></div>
+      <div class="bar-lbl">${days[i]}</div>
+      <div style="font-size:0.55rem;color:var(--g1);font-weight:700">${v}</div>
+    </div>`;
+  }).join('');
 }
 
-function delNote(i) { notes.splice(i, 1); save(NOTES_KEY, notes); renderNotes(); }
+// ==================== 액션 ====================
+function addTask(){
+  const inp=document.getElementById('task-inp'),text=inp.value.trim();
+  if(!text)return;
+  tasks.unshift({text,done:false,date:new Date().toLocaleDateString('ko-KR')});
+  sv(TK,tasks);inp.value='';renderTasks();
+}
+function toggle(i){tasks[i].done=!tasks[i].done;
+  if(tasks[i].done){
+    // 오늘 요일 카운트 증가
+    const d=new Date().getDay(),idx=d===0?6:d-1;
+    weekly[idx]++;sv(WK,weekly);
+  }
+  sv(TK,tasks);renderTasks();
+}
+function delT(i){tasks.splice(i,1);sv(TK,tasks);renderTasks()}
+function addNote(){
+  const ti=document.getElementById('note-inp'),tb=document.getElementById('note-body');
+  const title=ti.value.trim();if(!title)return;
+  notes.unshift({title,body:tb.value.trim(),date:new Date().toLocaleDateString('ko-KR')});
+  sv(NK,notes);ti.value='';tb.value='';renderNotes();
+}
+function delN(i){notes.splice(i,1);sv(NK,notes);renderNotes()}
 
-function tickClock() {
-  document.getElementById('header-time').textContent = new Date().toLocaleString('ko-KR', { hour:'2-digit', minute:'2-digit', second:'2-digit', year:'numeric', month:'long', day:'numeric', weekday:'short' });
+// ==================== 시계 ====================
+function tick(){
+  const now=new Date();
+  document.getElementById('live-clock').textContent=
+    now.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+  document.getElementById('live-date').textContent=
+    now.toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'short'});
 }
 
-document.getElementById('task-input').addEventListener('keydown', e => { if (e.key === 'Enter') addTask(); });
-document.getElementById('note-input').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('note-body').focus(); });
-document.getElementById('note-body').addEventListener('keydown', e => { if (e.key === 'Enter' && e.ctrlKey) addNote(); });
+// ==================== 키보드 ====================
+document.getElementById('task-inp').addEventListener('keydown',e=>{if(e.key==='Enter')addTask()});
+document.getElementById('note-inp').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('note-body').focus()});
+document.getElementById('note-body').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.ctrlKey)addNote()});
 
-renderTasks();
-renderNotes();
-tickClock();
-setInterval(tickClock, 1000);
+// ==================== 초기화 ====================
+renderTasks();renderNotes();tick();setInterval(tick,1000);
 </script>
 </body>
 </html>
